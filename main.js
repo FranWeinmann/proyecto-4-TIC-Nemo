@@ -1,4 +1,19 @@
-    // Detecta la orientación de la pantalla
+const leftOne = document.querySelector('.leftOne');
+const rightOne = document.querySelector('.rightOne');
+
+function checkOption (){
+  let isOn = false;
+  if(isOn){
+    rightOne.classList.add('on');
+    leftOne.classList.add('off');
+  }
+  else {
+    rightOne.classList.remove('on');
+    leftOne.classList.add('off');
+  }
+}
+
+// Detecta la orientación de la pantalla
     function checkOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
         const warning = document.querySelector('.warning-container');
@@ -20,3 +35,4 @@
       
       // Ejecuta la comprobación al cargar la página
       checkOrientation();
+      checkOption();
