@@ -39,6 +39,25 @@ function checkOrientation() {
   }
 }
 
+const joystick = nipplejs.create({
+  zone: document.getElementById('joystick-container'),
+  mode: 'static',
+  position: { left: '50%', top: '50%' },
+  size: 180
+});
+
+joystick.on('move', function (_, data) {
+  if (data.angle) {
+    const dir = Math.floor(data.angle.degree);
+    const speed = Math.floor(data.distance);
+    console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
+  }
+});
+
+joystick.on('end', function () {
+  console.log('Joystick liberado');
+});
+
 window.addEventListener('resize', checkOrientation);
 checkOrientation();
 checkOption();
