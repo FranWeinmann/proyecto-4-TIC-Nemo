@@ -5,6 +5,15 @@
   --green: #0AFF1A;
   --red: #FF1D1D;
   --noActive: #C3B3B3;
+  --box: #01121E;
+  --bgButtons: #CAB1B1;
+  --borderBox: #000000;
+}
+
+.inder-regular {
+  font-family: "Inder", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 body {
@@ -94,4 +103,40 @@ body {
 
 .nipple .front {
   background: #363636 !important;
+}
+
+.onlyIfOn{
+  width: 80%;
+  height: 30%;
+  position: absolute;
+  margin-top: 12%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.box{
+  border: 0.15em solid var(--borderBox);
+  border-radius: 0.3em;
+  width: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.txtBox{
+  font-family: "Inder", sans-serif;
+  font-size: 1.3em;
+  color: var(--box);
+}
+
+.robotBtn{
+  background-color: var(--bgButtons);
+  background-image: url(./images/robot.png);
+  border: none;
+  border-radius: 0.4em;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 60px;
+  height: 60px;
 }

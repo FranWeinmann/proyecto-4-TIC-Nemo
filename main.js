@@ -1,17 +1,39 @@
 const leftOne = document.querySelector('.leftOne');
 const rightOne = document.querySelector('.rightOne');
 const rightSide = document.querySelector('.rightSide');
-let isOn = false;
+const onlyIfOn = document.querySelector('.onlyIfOn');
+let isOn = true;
 let camera = false;
 
 function checkOption (){
   if(isOn){
     rightOne.classList.add('on');
     leftOne.classList.remove('off');
+    onlyIfOn.style.display = 'flex';
+
+    const joystick = nipplejs.create({
+      zone: document.getElementById('joystick-container'),
+      mode: 'static',
+      position: { left: '50%', top: '50%' },
+      size: 180
+    });
+    
+    joystick.on('move', function (_, data) {
+      if (data.angle) {
+        const dir = Math.floor(data.angle.degree);
+        const speed = Math.floor(data.distance);
+        console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
+      }
+    });
+    
+    joystick.on('end', function () {
+      console.log('Joystick liberado');
+    });
   }
   else {
     rightOne.classList.remove('on');
     leftOne.classList.add('off');
+    onlyIfOn.style.display = 'none';
   }
 }
 
@@ -38,25 +60,6 @@ function checkOrientation() {
     container.style.display = 'flex';
   }
 }
-
-const joystick = nipplejs.create({
-  zone: document.getElementById('joystick-container'),
-  mode: 'static',
-  position: { left: '50%', top: '50%' },
-  size: 180
-});
-
-joystick.on('move', function (_, data) {
-  if (data.angle) {
-    const dir = Math.floor(data.angle.degree);
-    const speed = Math.floor(data.distance);
-    console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
-  }
-});
-
-joystick.on('end', function () {
-  console.log('Joystick liberado');
-});
 
 window.addEventListener('resize', checkOrientation);
 checkOrientation();
