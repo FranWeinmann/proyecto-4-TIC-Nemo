@@ -2,38 +2,74 @@ const leftOne = document.querySelector('.leftOne');
 const rightOne = document.querySelector('.rightOne');
 const rightSide = document.querySelector('.rightSide');
 const onlyIfOn = document.querySelector('.onlyIfOn');
+const humanBtn = document.querySelector('.humanBtn');
+const robotBtn = document.querySelector('.robotBtn');
 let isOn = true;
 let camera = false;
+let isHuman = true;
+let joystickInstance = null;
+let joystickCreated = false;
+
+function changeSelectOption (option, diselected){
+  option.classList.add('selected');
+  diselected.classList.remove('selected');
+  option.classList.remove('otherOption');
+  diselected.classList.add('otherOption');
+}
+
+function removeJoystick() {
+  if (joystickInstance) {
+    joystickInstance.destroy();
+    joystickInstance = null;
+    joystickCreated = false;
+  }
+}
+
+function changeMode (){
+  if(!isHuman){
+    changeSelectOption(humanBtn, robotBtn);
+    removeJoystick();
+  } else{
+    changeSelectOption(robotBtn, humanBtn);
+    createJoystick();
+  }
+}
+
+function createJoystick (){
+  if(!joystickCreated){
+  joystickInstance = nipplejs.create({
+    zone: document.getElementById('joystick-container'),
+    mode: 'static',
+    position: { left: '50%', top: '50%' },
+    size: 180
+  });
+
+  joystickInstance.on('move', function (_, data) {
+    if (data.angle) {
+      const dir = Math.floor(data.angle.degree);
+      const speed = Math.floor(data.distance);
+      console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
+    }
+  });
+
+  joystickInstance.on('end', function () {
+    console.log('Joystick liberado');
+  });
+  joystickCreated = true;
+}
+}
 
 function checkOption (){
   if(isOn){
     rightOne.classList.add('on');
     leftOne.classList.remove('off');
     onlyIfOn.style.display = 'flex';
-
-    const joystick = nipplejs.create({
-      zone: document.getElementById('joystick-container'),
-      mode: 'static',
-      position: { left: '50%', top: '50%' },
-      size: 180
-    });
-    
-    joystick.on('move', function (_, data) {
-      if (data.angle) {
-        const dir = Math.floor(data.angle.degree);
-        const speed = Math.floor(data.distance);
-        console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
-      }
-    });
-    
-    joystick.on('end', function () {
-      console.log('Joystick liberado');
-    });
-  }
-  else {
+    createJoystick();
+  } else {
     rightOne.classList.remove('on');
     leftOne.classList.add('off');
     onlyIfOn.style.display = 'none';
+    removeJoystick();
   }
 }
 
@@ -62,6 +98,9 @@ function checkOrientation() {
 }
 
 window.addEventListener('resize', checkOrientation);
+humanBtn.addEventListener('click', ()=>{ isHuman = true; changeMode(); });
+robotBtn.addEventListener('click', ()=>{ isHuman = false; changeMode(); })
 checkOrientation();
 checkOption();
 showCamera();
+changeMode();

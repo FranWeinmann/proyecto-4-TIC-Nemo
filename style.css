@@ -41,6 +41,7 @@ body {
   margin-right: 5%;
   display: flex;
   justify-content: center;
+  margin-left: 2%;
 }
 
 .options{
@@ -64,17 +65,19 @@ body {
 
 .on{ background-color: var(--green); }
 .off{ background-color: var(--red); }
+.selected { box-shadow: 0 1.4em 0 #6C6565; }
+.otherOption{ box-shadow: 0 0.3em 0 #6C6565; }
 
 .rightSide {
-  width: 65%;
-  height: 85%;
+  width: 75%;
+  height: 88%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #C7CADA; 
+  margin-right: 3%;
 }
 
-/* Mensaje de advertencia */
 .warning {
   text-align: center;
   font-size: 2rem;
@@ -106,10 +109,10 @@ body {
 }
 
 .onlyIfOn{
-  width: 80%;
-  height: 30%;
+  width: 100%;
+  height: 60%;
   position: absolute;
-  margin-top: 12%;
+  margin-top: 5%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -118,7 +121,7 @@ body {
 .box{
   border: 0.15em solid var(--borderBox);
   border-radius: 0.3em;
-  width: 10%;
+  width: 15%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -128,15 +131,50 @@ body {
   font-family: "Inder", sans-serif;
   font-size: 1.3em;
   color: var(--box);
+  text-align: center;
+}
+
+.btnBox{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+}
+
+.humanBtn{
+  background-color: var(--bgButtons);
+  border: none;
+  border-radius: 50%;
+  width: 10%;
+  height: 65%;
+  cursor: pointer;
+  margin-right: 3%;
+}
+
+.humanImage{
+  background-image: url(./images/human.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  margin-top: 11%;
 }
 
 .robotBtn{
   background-color: var(--bgButtons);
-  background-image: url(./images/robot.png);
   border: none;
-  border-radius: 0.4em;
+  border-radius: 50%;
+  width: 10%;
+  height: 65%;
+  cursor: pointer;
+}
+
+.robotImage{
+  background-image: url(./images/robot.png);
   background-repeat: no-repeat;
   background-size: contain;
-  width: 60px;
-  height: 60px;
+  width: 85%;
+  height: 84%;
+  margin-left: 7.5%;
 }
