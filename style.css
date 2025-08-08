@@ -6,8 +6,11 @@
   --red: #FF1D1D;
   --noActive: #C3B3B3;
   --box: #01121E;
-  --bgButtons: #CAB1B1;
+  --borderButtons: #CAB1B1;
+  --bgButtons: #FBF9F9;
   --borderBox: #000000;
+  --bgJoystick: #a7a7a7;
+  --joystick: #363636;
 }
 
 .inder-regular {
@@ -86,6 +89,7 @@ body {
 }
 
 .warning-container {
+  width: 80%;
   display: none;
   background-color: #f7e6e6;
   padding: 20px;
@@ -101,27 +105,27 @@ body {
 }
 
 .nipple .back {
-  background: #a7a7a7 !important;
+  background: var(--bgJoystick) !important;
 }
 
 .nipple .front {
-  background: #363636 !important;
+  background: var(--joystick) !important;
 }
 
 .onlyIfOn{
   width: 100%;
   height: 60%;
   position: absolute;
-  margin-top: 5%;
+  margin-top: 6%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
 .box{
-  border: 0.15em solid var(--borderBox);
-  border-radius: 0.3em;
-  width: 15%;
+  border: 0.18em solid var(--borderBox);
+  border-radius: 1.7em;
+  width: 12%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -144,7 +148,7 @@ body {
 
 .humanBtn{
   background-color: var(--bgButtons);
-  border: none;
+  border: 0.15em solid var(--borderButtons);
   border-radius: 50%;
   width: 10%;
   height: 65%;
@@ -163,7 +167,7 @@ body {
 
 .robotBtn{
   background-color: var(--bgButtons);
-  border: none;
+  border: 0.15em solid var(--borderButtons);
   border-radius: 50%;
   width: 10%;
   height: 65%;

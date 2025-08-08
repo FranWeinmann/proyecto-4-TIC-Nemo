@@ -15,6 +15,9 @@ function changeSelectOption (option, diselected){
   diselected.classList.remove('selected');
   option.classList.remove('otherOption');
   diselected.classList.add('otherOption');
+  if(option = robotBtn){
+    removeJoystick();
+  }
 }
 
 function removeJoystick() {
@@ -28,10 +31,14 @@ function removeJoystick() {
 function changeMode (){
   if(!isHuman){
     changeSelectOption(humanBtn, robotBtn);
-    removeJoystick();
+    if(isOn){
+      removeJoystick();
+    }
   } else{
     changeSelectOption(robotBtn, humanBtn);
-    createJoystick();
+    if(isOn){
+      createJoystick();
+    }
   }
 }
 
