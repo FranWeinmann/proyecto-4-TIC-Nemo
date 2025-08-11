@@ -55,8 +55,9 @@ body {
   border: 0.2em solid var(--borderRectangle);
   border-radius: 0.4em;
   background-color: var(--bgRectangle);
-  width: 65%;
-  height: 8%;
+  width: 50%;
+  height: 6.3%;
+  margin-left: -30%;
 }
 
 .showed{
@@ -68,7 +69,7 @@ body {
 
 .on{ background-color: var(--green); }
 .off{ background-color: var(--red); }
-.selected { box-shadow: 0 1.4em 0 #6C6565; }
+.selected { box-shadow: 0 1.4em 0 #6C6565; margin-top: -2%; }
 .otherOption{ box-shadow: 0 0.3em 0 #6C6565; }
 
 .rightSide {
@@ -101,7 +102,6 @@ body {
   width: 15%;
   height: 30%;
   position: absolute;
-  margin-top: 33%;
 }
 
 .nipple .back {
@@ -125,10 +125,12 @@ body {
 .box{
   border: 0.18em solid var(--borderBox);
   border-radius: 1.7em;
-  width: 12%;
+  width: 20%;
+  height: 65%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .txtBox{
@@ -136,6 +138,8 @@ body {
   font-size: 1.3em;
   color: var(--box);
   text-align: center;
+  margin-bottom: 2%;
+  margin-top: 1%;
 }
 
 .btnBox{
@@ -150,18 +154,20 @@ body {
   background-color: var(--bgButtons);
   border: 0.15em solid var(--borderButtons);
   border-radius: 50%;
-  width: 10%;
-  height: 65%;
+  width: 40%;
+  height: 75%;
   cursor: pointer;
-  margin-right: 3%;
+  margin-right: 5%;
+  display: flex;
+  justify-content: center;
 }
 
 .humanImage{
   background-image: url(./images/human.png);
   background-repeat: no-repeat;
   background-size: contain;
-  width: 100%;
-  height: 100%;
+  width: 89%;
+  height: 90%;
   margin-top: 11%;
 }
 
@@ -169,16 +175,22 @@ body {
   background-color: var(--bgButtons);
   border: 0.15em solid var(--borderButtons);
   border-radius: 50%;
-  width: 10%;
-  height: 65%;
+  width: 40%;
+  height: 75%;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .robotImage{
   background-image: url(./images/robot.png);
   background-repeat: no-repeat;
   background-size: contain;
-  width: 85%;
-  height: 84%;
-  margin-left: 7.5%;
+  width: 80%;
+  height: 80%;
+}
+
+@media (max-width: 600px){
+
 }
