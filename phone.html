@@ -62,8 +62,9 @@ body {
   border: 0.2em solid var(--borderRectangle);
   border-radius: 0.4em;
   background-color: var(--bgRectangle);
-  width: 65%;
-  height: 8%;
+  width: 50%;
+  height: 6.3%;
+  margin-left: -30%;
 }
 
 .showed{
@@ -75,7 +76,7 @@ body {
 
 .on{ background-color: var(--green); }
 .off{ background-color: var(--red); }
-.selected { box-shadow: 0 1.4em 0 #6C6565; margin-top: -2%; }
+.selected { box-shadow: 0 1.4em 0 #6C6565; margin-top: -9.2%; }
 .otherOption{ box-shadow: 0 0.3em 0 #6C6565; }
 
 .rightSide {
@@ -108,7 +109,6 @@ body {
   width: 15%;
   height: 30%;
   position: absolute;
-  margin-top: 33%;
 }
 
 .nipple .back {
@@ -133,11 +133,12 @@ body {
   border: 0.18em solid var(--borderBox);
   border-radius: 1.7em;
   width: 20%;
-  height: 65%;
+  height: 70%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: -5%;
 }
 
 .txtBox{
@@ -155,6 +156,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 50%;
+  margin-top: 5%;
 }
 
 .humanBtn{
@@ -239,6 +241,7 @@ const onlyIfOn = document.querySelector('.onlyIfOn');
 const humanBtn = document.querySelector('.humanBtn');
 const robotBtn = document.querySelector('.robotBtn');
 const joystick  = document.getElementById('joystick-container');
+const box = document.querySelector('.box');
 let isOn = true;
 let camera = false;
 let isHuman = true;
@@ -279,11 +282,11 @@ function changeMode (){
 
 function createJoystick (){
   if(!joystickCreated){
-    const joystickSize = window.innerWidth < 600 ? 120 : 180;
-    const joystickMargin = window.innerWidth < 600 ? '25%' : '33%';
+    const joystickSize = window.innerWidth < 600 ? 108 : 185;
+    const joystickMargin = window.innerWidth < 600 ? '25%' : '31%';
     joystick.style.marginTop = joystickMargin;
     joystickInstance = nipplejs.create({
-        zone: joystick,
+      zone: joystick,
       mode: 'static',
       position: { left: '50%', top: '50%' },
       size: joystickSize
@@ -329,7 +332,17 @@ function showCamera (){
   }
 }
 
+function adjustDimensions (){
+  if (window.innerWidth < 600){
+    box.style.height = '83%';
+    box.style.marginTop = '-1%'
+    humanBtn.style.height = '78%';
+    robotBtn.style.height = '78%';
+  }
+}
+
 function checkOrientation() {
+  adjustDimensions();
   const isPortrait = window.innerHeight > window.innerWidth;
   const warning = document.querySelector('.warning-container');
   const container = document.querySelector('.container');
@@ -349,6 +362,7 @@ checkOrientation();
 checkOption();
 showCamera();
 changeMode();
+adjustDimensions();
   </script>
 </body>
 </html>

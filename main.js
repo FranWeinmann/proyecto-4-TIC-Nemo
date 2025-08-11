@@ -45,8 +45,8 @@ function changeMode (){
 
 function createJoystick (){
   if(!joystickCreated){
-    const joystickSize = window.innerWidth < 600 ? 80 : 180;
-    const joystickMargin = window.innerWidth < 600 ? '20%' : '33%';
+    const joystickSize = window.innerWidth < 600 ? 80 : 185;
+    const joystickMargin = window.innerWidth < 600 ? '20%' : '31%';
     joystick.style.marginTop = joystickMargin;
     joystickInstance = nipplejs.create({
       zone: joystick,
