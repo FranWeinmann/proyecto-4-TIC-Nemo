@@ -69,8 +69,9 @@ body {
 
 .on{ background-color: var(--green); }
 .off{ background-color: var(--red); }
-.selected { box-shadow: 0 1.4em 0 #6C6565; margin-top: -9.2%; }
+.selected { box-shadow: 0 1.4em 0 #6C6565; margin-top: -10.2%; }
 .otherOption{ box-shadow: 0 0.3em 0 #6C6565; }
+.selectedForCel { box-shadow: 0 1.4em 0 #6C6565; margin-top: -14%; }
 
 .rightSide {
   width: 75%;
@@ -154,7 +155,7 @@ body {
 
 .humanBtn{
   background-color: var(--bgButtons);
-  border: 0.15em solid var(--borderButtons);
+  border: 0.1em solid var(--borderButtons);
   border-radius: 50%;
   width: 40%;
   height: 75%;
@@ -164,18 +165,23 @@ body {
   justify-content: center;
 }
 
+button:hover{
+  outline: 0.5em solid #2868E0;
+}
+
 .humanImage{
   background-image: url(./images/human.png);
   background-repeat: no-repeat;
   background-size: contain;
   width: 89%;
   height: 90%;
-  margin-top: 11%;
+  margin-top: 7%;
+  margin-left: 19%;
 }
 
 .robotBtn{
   background-color: var(--bgButtons);
-  border: 0.15em solid var(--borderButtons);
+  border: 0.1em solid var(--borderButtons);
   border-radius: 50%;
   width: 40%;
   height: 75%;
@@ -191,8 +197,4 @@ body {
   background-size: contain;
   width: 80%;
   height: 80%;
-}
-
-@media (max-width: 600px){
-
 }

@@ -5,6 +5,8 @@ const onlyIfOn = document.querySelector('.onlyIfOn');
 const humanBtn = document.querySelector('.humanBtn');
 const robotBtn = document.querySelector('.robotBtn');
 const joystick  = document.getElementById('joystick-container');
+const btnBox = document.querySelector('.btnBox');
+const box = document.querySelector('.box');
 let isOn = true;
 let camera = false;
 let isHuman = true;
@@ -16,6 +18,12 @@ function changeSelectOption (option, diselected){
   diselected.classList.remove('selected');
   option.classList.remove('otherOption');
   diselected.classList.add('otherOption');
+  if(innerWidth < 600){
+    option.classList.add('selectedForCel');
+    diselected.classList.remove('selectedForCel');
+    option.classList.remove('otherOption');
+    diselected.classList.add('otherOption');
+  }
   if(option = robotBtn){
     removeJoystick();
   }
@@ -45,8 +53,8 @@ function changeMode (){
 
 function createJoystick (){
   if(!joystickCreated){
-    const joystickSize = window.innerWidth < 600 ? 80 : 185;
-    const joystickMargin = window.innerWidth < 600 ? '20%' : '31%';
+    const joystickSize = window.innerWidth < 600 ? 97 : 185;
+    const joystickMargin = window.innerWidth < 600 ? '25%' : '31%';
     joystick.style.marginTop = joystickMargin;
     joystickInstance = nipplejs.create({
       zone: joystick,
@@ -95,6 +103,17 @@ function showCamera (){
   }
 }
 
+function adjustDimensions (){
+  if (window.innerWidth < 600){
+    box.style.height = '83%';
+    box.style.marginTop = '-2.5%'
+    humanBtn.style.height = '80%';
+    robotBtn.style.height = '80%';
+    humanBtn.style.width = '30%';
+    robotBtn.style.width = '30%';
+  }
+}
+
 function checkOrientation() {
   const isPortrait = window.innerHeight > window.innerWidth;
   const warning = document.querySelector('.warning-container');
@@ -105,13 +124,16 @@ function checkOrientation() {
   } else {
     warning.style.display = 'none';
     container.style.display = 'flex';
+    adjustDimensions();
   }
 }
 
 window.addEventListener('resize', checkOrientation);
 humanBtn.addEventListener('click', ()=>{ isHuman = true; changeMode(); });
 robotBtn.addEventListener('click', ()=>{ isHuman = false; changeMode(); })
+document.addEventListener('DOMContentLoaded', adjustDimensions);
 checkOrientation();
 checkOption();
 showCamera();
 changeMode();
+adjustDimensions();
