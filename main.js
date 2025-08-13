@@ -14,7 +14,7 @@ let joystickInstance = null;
 let joystickCreated = false;
 
 function changeSelectOption (option, diselected){
-  if(innerWidth < 600){
+  if(window.innerWidth < 600){
     option.classList.add('selectedForCel');
     diselected.classList.remove('selectedForCel');
     option.classList.remove('otherOption');
