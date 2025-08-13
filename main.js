@@ -14,16 +14,14 @@ let joystickInstance = null;
 let joystickCreated = false;
 
 function changeSelectOption (option, diselected){
+  option.classList.remove('otherOption');
+  diselected.classList.add('otherOption');
   if(window.innerWidth < 600){
     option.classList.add('selectedForCel');
     diselected.classList.remove('selectedForCel');
-    option.classList.remove('otherOption');
-    diselected.classList.add('otherOption');
   } else{
     option.classList.add('selected');
     diselected.classList.remove('selected');
-    option.classList.remove('otherOption');
-    diselected.classList.add('otherOption');
   }
   if(option = robotBtn){
     removeJoystick();
