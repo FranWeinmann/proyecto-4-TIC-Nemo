@@ -3,10 +3,11 @@ import time
 import platform
 from ultralytics import YOLO
 
-# Cargar el modelo YOLO (nano = liviano, rápido para probar)
-model = YOLO("yolov8n.pt")  # asegurate de tener descargado este modelo
+model = YOLO("yolov8n.pt")
+trash: list = [
 
-# Detectar si corre en Raspberry Pi (ARM) o en PC
+]
+
 es_raspberry = "arm" in platform.machine()
 
 if es_raspberry:
@@ -19,29 +20,29 @@ else:
     cam.set(4, 480)
 
 if not cam.isOpened():
-    print("❌ Error: No se pudo abrir la cámara")
+    print("Error: No se pudo abrir la cámara")
     exit()
 
-print("✅ Cámara inicializada correctamente")
+print("Cámara inicializada correctamente")
 time.sleep(2)
 
 while True:
     ret, frame = cam.read()
     if not ret:
-        print("❌ Error al capturar imagen")
+        print("Error al capturar imagen")
         break
 
-    # Pasar el frame al modelo
-    results = model(frame, imgsz=320)  # imgsz=320 = más rápido, menos pesado
+    results = model(frame, imgsz=320, verbose=False)
+    results = results[results.class_id == trash]
 
-    # Dibujar resultados en el frame
     annotated_frame = results[0].plot()
+    
 
-    # Mostrar en ventana
     cv2.imshow("Detecciones", annotated_frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+        exit()
 
 cam.release()
 cv2.destroyAllWindows()

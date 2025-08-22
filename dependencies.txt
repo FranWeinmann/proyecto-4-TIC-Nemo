@@ -1,3 +1,5 @@
 1- cd C:\Documentos\GitHub\proyecto-4-TIC-Nemo
 2- venv\Scripts\Activate
 3- pip install opencv-python ultralytics supervision
+
+- https://www.youtube.com/watch?v=QV85eYOb7gk
