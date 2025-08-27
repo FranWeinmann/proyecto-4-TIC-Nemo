@@ -4,9 +4,6 @@ import platform
 from ultralytics import YOLO
 
 model = YOLO("yolov8n.pt")
-trash: list = [
-
-]
 
 es_raspberry = "arm" in platform.machine()
 
@@ -33,7 +30,7 @@ while True:
         break
 
     results = model(frame, imgsz=320, verbose=False)
-    results = results[results.class_id == trash]
+    results = results[results.class_id == 'balls']
 
     annotated_frame = results[0].plot()
     
