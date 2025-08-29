@@ -3,4 +3,4 @@ val: dataset/valid/images
 test: dataset/test/images
 
 nc: 1
-names: ['balls']
+names: ["balls"]

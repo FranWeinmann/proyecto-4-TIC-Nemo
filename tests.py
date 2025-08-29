@@ -3,7 +3,8 @@ import time
 import platform
 from ultralytics import YOLO
 
-model = YOLO("yolov8n.pt")
+# Carga el modelo entrenado
+model = YOLO("runs/segment/train/weights/best.pt")
 
 es_raspberry = "arm" in platform.machine()
 
@@ -30,16 +31,27 @@ while True:
         break
 
     results = model(frame, imgsz=320, verbose=False)
-    results = results[results.class_id == 'balls']
 
-    annotated_frame = results[0].plot()
-    
+    # Filtrar solo detecciones de la clase "balls"
+    filtered_results = []
+    for r in results:
+        mask_filtered = []
+        for i, cls in enumerate(r.boxes.cls):  # iteramos sobre cada caja detectada
+            class_name = r.names[int(cls)]
+            if class_name == "balls":
+                mask_filtered.append(i)
+        if mask_filtered:
+            filtered_results.append(r)
+
+    if filtered_results:
+        annotated_frame = filtered_results[0].plot()
+    else:
+        annotated_frame = frame  # si no hay detecciones, mostramos la imagen normal
 
     cv2.imshow("Detecciones", annotated_frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-        exit()
 
 cam.release()
 cv2.destroyAllWindows()
