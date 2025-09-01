@@ -64,9 +64,9 @@ function createJoystick (){
 
     joystickInstance.on('move', function (_, data) {
       if (data) {
-        const dir = Math.floor(data.angle.degree);
+        const direction = Math.floor(data.angle.degree);
         const speed = Math.floor(data.distance);
-        console.log(`Ángulo: ${dir}°, Velocidad: ${speed}`);
+        // Cambiar para mandarselo al hard: console.log(`Ángulo: ${direction}°, Velocidad: ${speed}`);
       }
     });
 
@@ -136,3 +136,10 @@ checkOption();
 showCamera();
 changeMode();
 adjustDimensions();
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker registrado:', reg))
+    .catch(err => console.log('Error registrando SW:', err));
+}

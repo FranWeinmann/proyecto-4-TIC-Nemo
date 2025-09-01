@@ -170,7 +170,7 @@ button:hover{
 }
 
 .humanImage{
-  background-image: url(./images/human.png);
+  background-image: url(./img/human.png);
   background-repeat: no-repeat;
   background-size: contain;
   width: 89%;
@@ -192,7 +192,7 @@ button:hover{
 }
 
 .robotImage{
-  background-image: url(./images/robot.png);
+  background-image: url(./img/robot.png);
   background-repeat: no-repeat;
   background-size: contain;
   width: 80%;
