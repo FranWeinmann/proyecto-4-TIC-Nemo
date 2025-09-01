@@ -4,7 +4,12 @@ const ASSETS = [
   '/index.html',
   '/style.css',
   '/main.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/img/logo.png',
+  '/img/human.png',
+  '/img/robot.png',
+  'https://cdn.jsdelivr.net/npm/nipplejs@0.9.0/dist/nipplejs.min.js'
+
 ];
 
 self.addEventListener('install', event => {
@@ -20,3 +25,7 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+
+self.addEventListener('activate', event => {
+    event.waitUntil(clients.claim());
+});  

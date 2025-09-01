@@ -71,7 +71,7 @@ function createJoystick (){
     });
 
     joystickInstance.on('end', function () {
-      console.log('Joystick liberado');
+      // console.log('Joystick liberado');
     });
     joystickCreated = true;
   }
