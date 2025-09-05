@@ -7,9 +7,7 @@ const ASSETS = [
   '/manifest.json',
   '/img/logo.png',
   '/img/human.png',
-  '/img/robot.png',
-  'https://cdn.jsdelivr.net/npm/nipplejs@0.9.0/dist/nipplejs.min.js'
-
+  '/img/robot.png'
 ];
 
 self.addEventListener('install', event => {

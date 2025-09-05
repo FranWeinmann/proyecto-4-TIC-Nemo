@@ -1,15 +1,15 @@
 {
     "name": "Proyecto Nemo",
     "short_name": "Nemo",
-    "start_url": "/",
+    "start_url": ".",
     "display": "standalone",
     "background_color": "#F0F3DA",
     "theme_color": "#F0F3DA",
     "orientation": "landscape",
     "icons": [
       {
-        "src": "/img/logo.png",
-        "sizes": "382x368",
+        "src": "/img/logo-512x512.png",
+        "sizes": "512x512",
         "type": "image/png"
       }
     ]
