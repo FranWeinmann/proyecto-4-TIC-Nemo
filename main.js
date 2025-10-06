@@ -24,7 +24,7 @@ function changeSelectOption (option, diselected){
     option.classList.add('selected');
     diselected.classList.remove('selected');
   }
-  if(option = robotBtn){
+  if(option === robotBtn){
     removeJoystick();
   }
 }
