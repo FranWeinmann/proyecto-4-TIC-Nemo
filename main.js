@@ -19,7 +19,6 @@ function changeSelectOption (option, diselected){
   if(window.innerWidth < 750){
     option.classList.add('selectedForCel');
     diselected.classList.remove('selectedForCel');
-    console.log('joal')
   } else{
     option.classList.add('selected');
     diselected.classList.remove('selected');
