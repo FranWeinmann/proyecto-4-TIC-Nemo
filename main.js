@@ -16,7 +16,7 @@ let joystickCreated = false;
 function changeSelectOption (option, diselected){
   option.classList.remove('otherOption');
   diselected.classList.add('otherOption');
-  if(window.innerWidth < 800){
+  if(window.innerWidth < 750){
     option.classList.add('selectedForCel');
     diselected.classList.remove('selectedForCel');
     console.log('joal')
@@ -53,8 +53,8 @@ function changeMode (){
 
 function createJoystick (){
   if(!joystickCreated){
-    const joystickSize = window.innerWidth < 600 ? 97 : 185;
-    const joystickMargin = window.innerWidth < 600 ? '25%' : '31%';
+    const joystickSize = window.innerWidth < 750 ? 97 : 185;
+    const joystickMargin = window.innerWidth < 750 ? '25%' : '31%';
     joystick.style.marginTop = joystickMargin;
     joystickInstance = nipplejs.create({
       zone: joystick,
