@@ -16,9 +16,10 @@ let joystickCreated = false;
 function changeSelectOption (option, diselected){
   option.classList.remove('otherOption');
   diselected.classList.add('otherOption');
-  if(window.innerWidth < 600){
+  if(window.innerWidth < 800){
     option.classList.add('selectedForCel');
     diselected.classList.remove('selectedForCel');
+    console.log('joal')
   } else{
     option.classList.add('selected');
     diselected.classList.remove('selected');
