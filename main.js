@@ -8,10 +8,11 @@ const joystick  = document.getElementById('joystick-container');
 const btnBox = document.querySelector('.btnBox');
 const box = document.querySelector('.box');
 let isOn = true;
-let camera = false;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
+const raspbiID = "";
+let frenar = false;
 
 function changeSelectOption (option, diselected){
   option.classList.remove('otherOption');
@@ -66,12 +67,22 @@ function createJoystick (){
       if (data) {
         const direction = Math.floor(data.angle.degree);
         const speed = Math.floor(data.distance);
-        // Cambiar para mandarselo al hard: console.log(`Ángulo: ${direction}°, Velocidad: ${speed}`);
+        frenar = false;
+        fetch(`http://${raspbiID}/control`, { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ direction, speed, frenar })
+        }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
       }
     });
 
     joystickInstance.on('end', function () {
-      // console.log('Joystick liberado');
+      frenar = true;
+      fetch(`http://${raspbiID}/control`, { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ frenar })
+        }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
     });
     joystickCreated = true;
   }
@@ -91,15 +102,30 @@ function checkOption (){
   }
 }
 
-function showCamera (){
-  if(!camera){
-    const newText = document.createElement('h1');
-    newText.style = `
-    font-size: 4em;
-    color: red;`;
-    newText.textContent = '⚠️ No se recibe el video';
-    rightSide.appendChild(newText);
-  }
+function showCamera() {
+  const videoUrl = `http://${raspbiID}/video`;
+  const img = document.createElement("img");
+  img.id = "video-stream";
+  img.src = videoUrl;
+  img.alt = "Video de detecciones";
+  img.style = `
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
+    display: block;
+  `;
+
+  img.addEventListener("error", () => {
+    rightSide.innerHTML = `
+      <h1 style="font-size:4em; color:red;">
+        ⚠️ No se recibe el video
+      </h1>
+    `;
+  });
+
+  rightSide.innerHTML = "";
+  rightSide.appendChild(img);
 }
 
 function adjustDimensions (){
@@ -128,16 +154,31 @@ function checkOrientation() {
 }
 
 window.addEventListener('resize', checkOrientation);
-humanBtn.addEventListener('click', ()=>{ isHuman = true; changeMode(); });
-robotBtn.addEventListener('click', ()=>{ isHuman = false; changeMode(); })
+humanBtn.addEventListener('click', ()=>{
+  isHuman = true;
+  changeMode();
+  fetch(`http://${raspbiID}/mode`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: "manual" })
+  }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+});
+
+robotBtn.addEventListener('click', ()=>{
+  isHuman = false;
+  changeMode();
+  fetch(`http://${raspbiID}/mode`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: "auto" })
+  }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+});
 document.addEventListener('DOMContentLoaded', adjustDimensions);
 checkOrientation();
 checkOption();
 showCamera();
 changeMode();
 adjustDimensions();
-
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
     .then(reg => console.log('Service Worker registrado:', reg))
