@@ -68,7 +68,7 @@ function createJoystick (){
         const direction = Math.floor(data.angle.degree);
         const speed = Math.floor(data.distance);
         frenar = false;
-        fetch(`http://${raspbiID}/control`, { 
+        fetch(`https://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction, speed, frenar })
@@ -78,7 +78,7 @@ function createJoystick (){
 
     joystickInstance.on('end', function () {
       frenar = true;
-      fetch(`http://${raspbiID}/control`, { 
+      fetch(`https://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ frenar })
@@ -103,7 +103,7 @@ function checkOption (){
 }
 
 function showCamera() {
-  const videoUrl = `http://${raspbiID}/video`;
+  const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("img");
   img.id = "video-stream";
   img.src = videoUrl;
@@ -157,7 +157,7 @@ window.addEventListener('resize', checkOrientation);
 humanBtn.addEventListener('click', ()=>{
   isHuman = true;
   changeMode();
-  fetch(`http://${raspbiID}/mode`, {
+  fetch(`https://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "manual" })
@@ -167,7 +167,7 @@ humanBtn.addEventListener('click', ()=>{
 robotBtn.addEventListener('click', ()=>{
   isHuman = false;
   changeMode();
-  fetch(`http://${raspbiID}/mode`, {
+  fetch(`https://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" })
