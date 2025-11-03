@@ -106,23 +106,24 @@ function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
   img.id = "video-stream";
-  img.src = videoUrl;
   img.alt = "Video de detecciones";
   img.style = `
     width: 100%;
-    height: 100%;
     height: auto;
     border-radius: 20px;
     object-fit: cover;
     display: block;
   `;
-
-  img.addEventListener("error", () => {
+  fetch(videoUrl, {
+    headers: {
+      "ngrok-skip-browser-warning": "true"
+    }
+  }) .then(() => { img.src = videoUrl; }) .catch(err => {
+    console.error("Error al conectar con el video:", err);
     rightSide.innerHTML = `
       <h1 style="font-size:4em; color:red;">
         ⚠️ No se recibe el video
-      </h1>
-    `;
+      </h1>`;
   });
 
   rightSide.innerHTML = "";
