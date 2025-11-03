@@ -104,7 +104,7 @@ function checkOption (){
 
 function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
-  const img = document.createElement("video");
+  const img = document.createElement("iframe");
   img.id = "video-stream";
   img.src = videoUrl;
   img.alt = "Video de detecciones";
