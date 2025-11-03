@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "127.0.0.1:5000";
+const raspbiID = "carolann-discussible-davis.ngrok-free.dev"";
 let frenar = false;
 
 function changeSelectOption (option, diselected){
