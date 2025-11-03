@@ -72,7 +72,7 @@ function createJoystick (){
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction, speed, frenar })
-        }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+        }).catch(err => { console.error("Error al enviar:", err) });
       }
     });
 
@@ -82,7 +82,7 @@ function createJoystick (){
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ frenar })
-        }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+        }).catch(err => { console.error("Error al enviar:", err) });
     });
     joystickCreated = true;
   }
@@ -104,12 +104,13 @@ function checkOption (){
 
 function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
-  const img = document.createElement("img");
+  const img = document.createElement("video");
   img.id = "video-stream";
   img.src = videoUrl;
   img.alt = "Video de detecciones";
   img.style = `
     width: 100%;
+    height: 100%;
     height: auto;
     border-radius: 20px;
     object-fit: cover;
@@ -161,7 +162,7 @@ humanBtn.addEventListener('click', ()=>{
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "manual" })
-  }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+  }).catch(err => { console.error("Error al enviar:", err) });
 });
 
 robotBtn.addEventListener('click', ()=>{
@@ -171,7 +172,7 @@ robotBtn.addEventListener('click', ()=>{
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" })
-  }).catch(err => { console.error("Error al enviar:", err); alert("Hubo un error al enviar los datos"); });
+  }).catch(err => { console.error("Error al enviar:", err) });
 });
 document.addEventListener('DOMContentLoaded', adjustDimensions);
 checkOrientation();
