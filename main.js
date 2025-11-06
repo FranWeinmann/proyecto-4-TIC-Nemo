@@ -108,6 +108,7 @@ function showCamera() {
   let imagen = fetch(videoUrl, { 
           method: "GET"
         }).catch(err => { console.error("Error al enviar:", err) });
+  console.log(imagen)
   const img = document.createElement("img");
   img.id = "video-stream";
   img.alt = "Video de detecciones";
