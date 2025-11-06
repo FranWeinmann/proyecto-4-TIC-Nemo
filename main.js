@@ -109,7 +109,7 @@ async function showCamera() {
           method: "GET"
         }).catch(err => { console.error("Error al enviar:", err) });
   console.log(imagen)
-  const img = document.createElement("img");
+  const img = document.createElement("iframe");
   img.id = "video-stream";
   img.alt = "Video de detecciones";
   img.src = videoUrl;
