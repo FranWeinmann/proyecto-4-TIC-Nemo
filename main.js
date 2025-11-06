@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "carolann-discussible-davis.ngrok-free.dev";
+const raspbiID = "10.8.5.160:5000";
 let frenar = false;
 
 function changeSelectOption (option, diselected){
@@ -104,7 +104,7 @@ function checkOption (){
 
 async function showCamera() {
   
-  const videoUrl = `https://${raspbiID}/stream`;
+  const videoUrl = `http://${raspbiID}/stream`;
   // let imagen = await fetch(videoUrl, { 
   //         method: "GET"
   //       }).catch(err => { console.error("Error al enviar:", err) });
