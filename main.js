@@ -114,8 +114,8 @@ function showCamera() {
     border-radius: 20px;
     object-fit: cover;
     display: block;`;
-  img.addEventListener("error", () => {
-    rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`; 
+  img.addEventListener("error", (e) => {
+    rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`; console.log(e);
   });
   rightSide.innerHTML = "";
   rightSide.appendChild(img);
