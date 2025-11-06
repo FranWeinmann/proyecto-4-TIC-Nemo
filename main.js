@@ -115,7 +115,7 @@ async function showCamera() {
   img.src = videoUrl;
   img.style = `
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 20px;
     object-fit: cover;
     display: block;`;
