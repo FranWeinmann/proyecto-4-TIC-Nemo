@@ -105,14 +105,14 @@ function checkOption (){
 async function showCamera() {
   
   const videoUrl = `https://${raspbiID}/stream`;
-  let imagen = await fetch(videoUrl, { 
-          method: "GET"
-        }).catch(err => { console.error("Error al enviar:", err) });
-  console.log(imagen)
+  // let imagen = await fetch(videoUrl, { 
+  //         method: "GET"
+  //       }).catch(err => { console.error("Error al enviar:", err) });
+  // console.log(imagen)
   const img = document.createElement("img");
   img.id = "video-stream";
   img.alt = "Video de detecciones";
-  img.src = imagen;
+  img.src = videoUrl;
   img.style = `
     width: 100%;
     height: auto;
