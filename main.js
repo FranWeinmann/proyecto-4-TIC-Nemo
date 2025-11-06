@@ -68,7 +68,7 @@ function createJoystick (){
         const direction = Math.floor(data.angle.degree);
         const speed = Math.floor(data.distance);
         frenar = false;
-        fetch(`https://${raspbiID}/control`, { 
+        fetch(`http://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction, speed, frenar })
@@ -78,7 +78,7 @@ function createJoystick (){
 
     joystickInstance.on('end', function () {
       frenar = true;
-      fetch(`https://${raspbiID}/control`, { 
+      fetch(`http://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ frenar })
@@ -155,7 +155,7 @@ window.addEventListener('resize', checkOrientation);
 humanBtn.addEventListener('click', ()=>{
   isHuman = true;
   changeMode();
-  fetch(`https://${raspbiID}/mode`, {
+  fetch(`http://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "manual" })
@@ -165,7 +165,7 @@ humanBtn.addEventListener('click', ()=>{
 robotBtn.addEventListener('click', ()=>{
   isHuman = false;
   changeMode();
-  fetch(`https://${raspbiID}/mode`, {
+  fetch(`http://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" })
