@@ -102,7 +102,7 @@ function checkOption (){
   }
 }
 
-function showCamera() {
+async function showCamera() {
   
   const videoUrl = `https://${raspbiID}/stream`;
   let imagen = await fetch(videoUrl, { 
