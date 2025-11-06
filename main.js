@@ -103,19 +103,23 @@ function checkOption (){
 }
 
 function showCamera() {
+  
   const videoUrl = `https://${raspbiID}/stream`;
+  let imagen = fetch(videoUrl, { 
+          method: "GET"
+        }).catch(err => { console.error("Error al enviar:", err) });
   const img = document.createElement("img");
   img.id = "video-stream";
   img.alt = "Video de detecciones";
-  img.src = videoUrl;
+  img.src = imagen;
   img.style = `
     width: 100%;
     height: auto;
     border-radius: 20px;
     object-fit: cover;
     display: block;`;
-  img.addEventListener("error", (e) => {
-    rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`; console.log(e);
+  img.addEventListener("error", () => {
+    rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`;
   });
   rightSide.innerHTML = "";
   rightSide.appendChild(img);
