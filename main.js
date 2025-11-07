@@ -173,6 +173,7 @@ robotBtn.addEventListener('click', ()=>{
 });
 leftOne.addEventListener('click', ()=>{
   isOn = false;
+  checkOption();
   fetch(`https://${raspbiID}/isOn`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
