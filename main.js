@@ -99,11 +99,12 @@ function checkOption (){
     leftOne.classList.add('off');
     onlyIfOn.style.display = 'none';
     removeJoystick();
+    rightSide.innerHTML = "";
+    rightSide.innerHTML = `<h1 style="font-size:4em; color:black;">Raspby apagada</h1>`;
   }
 }
 
 async function showCamera() {
-  
   const videoUrl = `https://${raspbiID}/stream`;
   let imagen = await fetch(videoUrl, { 
           method: "GET"
