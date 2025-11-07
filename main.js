@@ -101,7 +101,6 @@ function checkOption (){
     removeJoystick();
     rightSide.innerHTML = "";
     rightSide.innerHTML = `<h1 style="font-size:4em; color:black;">Raspby apagada</h1>`;
-    document.getElementById('video-stream').style.display = 'none';
   }
 }
 
