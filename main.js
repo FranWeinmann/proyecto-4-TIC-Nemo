@@ -171,6 +171,14 @@ robotBtn.addEventListener('click', ()=>{
     body: JSON.stringify({ mode: "auto" })
   }).catch(err => { console.error("Error al enviar:", err) });
 });
+leftOne.addEventListener('click', ()=>{
+  isOn = false;
+  fetch(`https://${raspbiID}/isOn`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isOn: isOn })
+  }).catch(err => { console.error("Error al enviar:", err) });
+});
 document.addEventListener('DOMContentLoaded', adjustDimensions);
 checkOrientation();
 checkOption();
