@@ -106,7 +106,7 @@ function checkOption (){
 
 async function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
-  const img = document.createElement("img");
+  const img = document.createElement("iframe");
   await fetch(videoUrl, { 
     method: "get", 
     headers: new Headers({ "ngrok-skip-browser-warning": "69420"})
