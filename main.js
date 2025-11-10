@@ -105,7 +105,7 @@ function checkOption (){
 }
 
 async function showCamera() {
-  const videoUrl = `https://${raspbiID}/stream`;
+  const videoUrl = `https://${raspbiID}/video`;
   let imagen = await fetch(videoUrl, { 
           method: "GET"
         }).catch(err => { console.error("Error al enviar:", err) });
