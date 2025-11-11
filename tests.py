@@ -5,14 +5,173 @@ from ultralytics import YOLO
 import RPi.GPIO as GPIO
 import time
 from picamera2 import Picamera2, Preview
+import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+GPIO.cleanup
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://proyecto-nemo.vercel.app"}})
 model = YOLO("best.pt")
 picam = Picamera2()
 picam.start()
 current_mode = "manual"
 frenar = True
+
+ENA = 12
+IN1motorA = 16
+IN2motorA = 18
+ENB = 34
+IN1motorB = 36
+IN2motorB = 38
+motorPins = [IN1motorA, IN2motorA, IN1motorB, IN2motorB]
+IN1pasoD = 7
+IN2pasoD = 11
+IN3pasoD = 13
+IN4pasoD = 15
+pasoDerPins = [IN1pasoD, IN2pasoD, IN3pasoD, IN4pasoD]
+IN1pasoI = 31
+IN2pasoI = 33
+IN3pasoI = 35
+IN4pasoI = 37
+High = GPIO.HIGH
+Low = GPIO.LOW
+motorLista = [
+	[High, Low, Low, High],
+	[Low, High, High, Low],
+	[Low, High, Low, High],
+	[High, Low, High, Low],
+	[Low, Low, Low, Low],
+	[High, High, High, High]
+]
+pasoIzqPins = [IN1pasoI, IN2pasoI, IN3pasoI, IN4pasoI]
+
+def cambiaVel():
+	PWMa.ChangeDutyCycle(Speed)
+	PWMb.ChangeDutyCycle(Speed)
+
+def derecho():
+	for entr in range (4):
+		GPIO.output(motorPins[entr], motorLista[0[entr]])
+
+def atras():
+	for entr in range (4):
+		GPIO.output(motorPins[entr], motorLista[1[entr]])
+
+def giroDer(x):
+	for entr in range (4):
+		GPIO.output(motorPins[entr], motorLista[0[entr]])
+		PWMa.ChangeDutyCycle(Speed)
+		PWMb.ChangeDutyCycle(math.floor(int(Speed)/x))
+
+def giroIzq(x):
+	for entr in range (4):
+		GPIO.output(motorPins[entr], motorLista[0[entr]])
+		PWMa.ChangeDutyCycle(math.floor(int(Speed)/x))
+		PWMb.ChangeDutyCycle(Speed)
+
+def freno():
+	for entr in range (4):
+		GPIO.output(motorPins[entr], motorLista[4[entr]])
+		cambiaVel(0)
+
+pasosListaMAS = [
+	[High,Low,Low,Low],
+	[High,High,Low,Low],
+	[Low,High,Low,Low],
+	[Low,High,High,Low],
+	[Low,Low,High,Low],
+	[Low,Low,High,High],
+	[Low,Low,Low,High],
+	[High,Low,Low,High]
+]
+
+stepsCant = 750
+
+def abroRed():
+	for i in range (stepsCant):
+		izq = 7
+		der = 0
+		while izq > -1 and der < 8:
+			for pin in range (4):
+				GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
+				GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
+				der+= 1
+				izq-= 1
+			time.sleep(0.001)
+
+def cierroRed():
+	for i in range (stepsCant):
+		izq = 0
+		der = 7
+		while izq < 8 and der > -1:
+			for pin in range (4):
+				GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
+				GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
+				der-= 1
+				izq+= 1
+			time.sleep(0.001)
+
+def apago():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setwarnings(False)
+    all_pins = pasoDerPins + pasoIzqPins + motorPins + [ENA, ENB]
+    for pin in all_pins:
+        GPIO.setup(pin, GPIO.OUT)
+    for i in range(4):
+        GPIO.output(pasoDerPins[i], Low)
+        GPIO.output(pasoIzqPins[i], Low)
+        GPIO.output(motorPins[i], Low)
+    GPIO.output(ENA, Low)
+    GPIO.output(ENB, Low)
+
+
+def turnAllOff():
+	picam.stop()
+	picam.stop_preview()
+	apago()
+	GPIO.cleanup()
+
+def generate():
+	while True:
+		frame = picam.capture_array()
+		if frame is None:
+			continue
+		if current_mode == "auto":
+			results = model(frame, imgsz=320, verbose=False)
+			frame_width = frame.shape[1]
+			mitad = frame_width // 2
+			izquierda = 0
+			derecha = 0
+
+			for r in results:
+				boxes = r.boxes.xyxy
+				clases = r.boxes.cls
+				for i, cls in enumerate(clases):
+					class_name = r.names[int(cls)]
+					if class_name == "balls":
+						x1, y1, x2, y2 = boxes[i]
+						cx = (x1 + x2) / 2
+						if cx < mitad:
+							izquierda += 1
+						else:
+							derecha += 1
+
+			if izquierda > derecha:
+				pass
+			elif derecha > izquierda:
+				pass
+			elif izquierda >= 1 and derecha == izquierda:
+				pass
+			else:
+				pass
+
+			frame = results[0].plot() if len(results) > 0 else frame
+
+		_, buffer = cv2.imencode('.jpg', frame)
+		yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' +
+			   buffer.tobytes() + b'\r\n')
+
 
 @app.route("/mode", methods=["POST"])
 def change_mode():
@@ -23,81 +182,88 @@ def change_mode():
     return jsonify({"status": "ok", "mode": current_mode})
 
 
+@app.route("/isOn", methods=["POST"])
+def turnOff():
+	data = request.get_json()
+	if not data["isOn"]:
+		turnAllOff()
+	return jsonify({"status": "ok"})
+
 @app.route("/control", methods=["POST"])
 def control():
-    global frenar
+    global frenar, Speed
+
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setwarnings(False)
+    GPIO.setup(ENA, GPIO.OUT)
+    GPIO.setup(ENB, GPIO.OUT)
+
+    for i in range(4):
+        GPIO.setup(pasoDerPins[i], GPIO.OUT)
+        GPIO.setup(pasoIzqPins[i], GPIO.OUT)
+        GPIO.setup(motorPins[i], GPIO.OUT)
+
+    PWMa = GPIO.PWM(ENA, 1000)
+    PWMb = GPIO.PWM(ENB, 1000)
+    PWMa.start(50)
+    PWMb.start(50)
+
     data = request.get_json()
     print("Datos joystick:", data)
 
-    frenar = data.get("frenar", False)
+    Frenar = data.get("frenar", True)
+    Direction = data.get("direction", 0)
+    Speed = data.get("speed", 0)
 
-    if frenar:
-        #detener()
+    if Frenar:
+        freno()
+        cierroRed()
         return jsonify({"status": "detenido"})
+    else:
+        abroRed()
+        cambiaVel()
 
-    direction = data.get("direction", 0)
-    speed = data.get("speed", 0)
-    velocidad = min(max(int(speed / 2), 20), 100)
+        if 105 < Direction < 270:
+            if Direction <= 135:
+                giroIzq(1.75)
+            elif Direction <= 165:
+                giroIzq(2)
+            elif Direction <= 195:
+                giroIzq(2.5)
+            elif Direction <= 225:
+                giroIzq(3.25)
+            elif Direction <= 255:
+                giroIzq(4.25)
+            elif Direction < 270:
+                giroIzq(5.5)
 
-    # codigo para determinar la direccion (hablar con nina)
-    # else:
-        #detener()
+        elif 270 < Direction <= 360 or 0 <= Direction < 75:
+            if 45 <= Direction < 270:
+                giroDer(1.75)
+            elif 15 <= Direction < 270:
+                giroDer(2)
+            elif 0 <= Direction <= 345:
+                giroDer(2.5)
+            elif Direction >= 315:
+                giroDer(3.25)
+            elif Direction >= 285:
+                giroDer(4.25)
+            elif Direction > 270:
+                giroDer(5.5)
+
+        return jsonify({"status": "avanzando"})
 
     return jsonify({"status": "ok"})
 
-
 @app.route("/video")
 def video_feed():
-    def generate():
-        while True:
-            frame = picam.capture_array()  # solo frame, no success
-            if frame is None:
-                continue  # si algo falla, saltamos a la siguiente iteración
-
-            # Modo automático: detección con YOLO
-            if current_mode == "auto":
-                results = model(frame, imgsz=320, verbose=False)
-                frame_width = frame.shape[1]
-                mitad = frame_width // 2
-                izquierda = 0
-                derecha = 0
-
-                for r in results:
-                    boxes = r.boxes.xyxy
-                    clases = r.boxes.cls
-                    for i, cls in enumerate(clases):
-                        class_name = r.names[int(cls)]
-                        if class_name == "balls":
-                            x1, y1, x2, y2 = boxes[i]
-                            cx = (x1 + x2) / 2
-                            if cx < mitad:
-                                izquierda += 1
-                            else:
-                                derecha += 1
-
-                if izquierda > derecha:
-                    pass
-                elif derecha > izquierda:
-                    pass
-                elif izquierda >= 1 and derecha == izquierda:
-                    pass
-                else:
-                    pass
-
-                frame = results[0].plot() if len(results) > 0 else frame
-
-            # Convertimos el frame a JPEG para enviar al navegador
-            _, buffer = cv2.imencode('.jpg', frame)
-            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' +
-                   buffer.tobytes() + b'\r\n')
-
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
-                    
+
+
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", port=5000, debug=False)
+        app.run(host="0.0.0.0", port=5000, debug=False, ssl_context=("10.8.5.160.pem", "10.8.5.160-key.pem"))
     except KeyboardInterrupt:
         print("Cerrando servidor y cámara...")
-        picam.stop()
-        picam.stop_preview()
+        turnAllOff()
 
