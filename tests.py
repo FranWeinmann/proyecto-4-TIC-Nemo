@@ -11,12 +11,24 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 GPIO.cleanup
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://proyecto-nemo.vercel.app"}})
+CORS(app, supports_credentials=True, resources={r"/*": {
+    "origins": ["https://proyecto-nemo.vercel.app", "https://unprudential-unrefreshed-bennie.ngrok-free.dev"],
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 model = YOLO("best.pt")
 picam = Picamera2()
 picam.start()
 current_mode = "manual"
 frenar = True
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers.add("Access-Control-Allow-Origin", "https://proyecto-nemo.vercel.app")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    return response
 
 ENA = 12
 IN1motorA = 16
@@ -262,7 +274,7 @@ def video_feed():
 
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", port=5000, debug=False, ssl_context=("10.8.5.160.pem", "10.8.5.160-key.pem"))
+        app.run(host="0.0.0.0", port=5000, debug=False, ssl_context='adhoc')
     except KeyboardInterrupt:
         print("Cerrando servidor y cámara...")
         turnAllOff()
