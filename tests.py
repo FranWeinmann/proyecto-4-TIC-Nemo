@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {
     "origins": ["https://proyecto-nemo.vercel.app", "https://unprudential-unrefreshed-bennie.ngrok-free.dev"],
     "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"]
+    "allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"]
 }})
 model = YOLO("best.pt")
 picam = Picamera2()
@@ -25,7 +25,7 @@ frenar = True
 @app.after_request
 def add_cors_headers(response):
     response.headers.add("Access-Control-Allow-Origin", "https://proyecto-nemo.vercel.app")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,ngrok-skip-browser-warning")
     response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
     response.headers.add("Access-Control-Allow-Credentials", "true")
     return response
