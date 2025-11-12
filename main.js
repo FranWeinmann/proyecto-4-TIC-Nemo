@@ -111,7 +111,10 @@ async function showCamera() {
     method: "get", 
     headers: new Headers({ "ngrok-skip-browser-warning": "69420"})
   }) .then(res => {
-    if (res.ok) img.src = videoUrl;
+    if (res.ok){
+      img.src = videoUrl;
+      console.log(res);
+    }
     else console.log(res);
   }) .catch((err) => {
     rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`;
