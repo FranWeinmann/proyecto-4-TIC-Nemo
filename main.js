@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "unprudential-unrefreshed-bennie.ngrok-free.dev";
+const raspbiID = "unprudential-unrefreshed-bennie.ngrok-free";
 let frenar = false;
 
 function changeSelectOption (option, diselected){
