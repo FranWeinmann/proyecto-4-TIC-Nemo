@@ -108,8 +108,12 @@ async function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
   await fetch(videoUrl, { 
-    method: "GET", 
-    headers: new Headers({ "ngrok-skip-browser-warning": "69420",}),
+    method: "GET",
+    headers: {
+      "ngrok-skip-browser-warning": "69420",
+      "User-Agent": "custom-client", 
+      "Content-Type": "application/json"
+    }
   }) .then(res => {
     if (res.ok){
       img.src = videoUrl;
