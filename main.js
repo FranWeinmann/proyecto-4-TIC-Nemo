@@ -185,7 +185,7 @@ leftOne.addEventListener('click', async ()=>{
   checkOption();
 });
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetch(`https://${raspbiID}/skipp-warning`, {
+  await fetch(`https://${raspbiID}/video`, {
     method: "GET",
     headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
   }).catch(err => console.log("Error inicial skip-warning:", err));

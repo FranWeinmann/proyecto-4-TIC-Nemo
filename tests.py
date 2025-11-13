@@ -271,12 +271,6 @@ def control():
 def video_feed():
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route("/skipp-warning")
-def skipp_browser_warning():
-    print("Recibido skip-warning request con header:", request.headers.get("ngrok-skip-browser-warning"))
-    return jsonify({"status": "ok", "message": "ngrok warning skipped"})
-
-
 if __name__ == "__main__":
     try:
         app.run(host="0.0.0.0", port=5000, debug=False, ssl_context='adhoc')
