@@ -271,6 +271,19 @@ def control():
 def video_feed():
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route("/skipp-warning")
+def skipp_browser_warning():
+	def get_internal_headers(service_name: str, request_id: str = None) -> Dict[str, str]:
+		if request_id is None:
+			request_id = str(uuid.uuid4())
+		headers = {
+			"X-Service-Name": service_name,
+			"X-Request-ID": request_id,
+		}
+		headers["ngrok-skip-browser-warning"] = "true"
+		return headers
+	headers = get_internal_headers(service_name="email-service")
+	response = requests.get(endpoint, params=query_params, headers=headers, timeout=10)
 
 if __name__ == "__main__":
     try:
