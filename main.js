@@ -188,7 +188,11 @@ leftOne.addEventListener('click', async ()=>{
   }).catch(err => { console.error("Error al enviar:", err) });
   checkOption();
 });
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetch(`https://${raspbiID}/video`, {
+    method: "GET",
+    headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
+  })
   adjustDimensions();
   checkOrientation();
   checkOption();
