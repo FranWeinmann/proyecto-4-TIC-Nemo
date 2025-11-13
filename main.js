@@ -184,12 +184,19 @@ leftOne.addEventListener('click', async ()=>{
   }).catch(err => { console.error("Error al enviar:", err) });
   checkOption();
 });
-document.addEventListener('DOMContentLoaded', adjustDimensions);
-checkOrientation();
-checkOption();
-showCamera();
-changeMode();
-adjustDimensions();
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetch(`https://${raspbiID}/skipp-warning`, {
+    method: "GET",
+    headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
+  }).catch(err => console.log("Error inicial skip-warning:", err));
+
+  adjustDimensions();
+  checkOrientation();
+  checkOption();
+  showCamera();
+  changeMode();
+});
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
     .then(reg => console.log('Service Worker registrado:', reg))

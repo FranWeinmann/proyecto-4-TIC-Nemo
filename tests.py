@@ -273,17 +273,9 @@ def video_feed():
 
 @app.route("/skipp-warning")
 def skipp_browser_warning():
-	def get_internal_headers(service_name: str, request_id: str = None) -> Dict[str, str]:
-		if request_id is None:
-			request_id = str(uuid.uuid4())
-		headers = {
-			"X-Service-Name": service_name,
-			"X-Request-ID": request_id,
-		}
-		headers["ngrok-skip-browser-warning"] = "true"
-		return headers
-	headers = get_internal_headers(service_name="email-service")
-	response = requests.get(endpoint, params=query_params, headers=headers, timeout=10)
+    print("Recibido skip-warning request con header:", request.headers.get("ngrok-skip-browser-warning"))
+    return jsonify({"status": "ok", "message": "ngrok warning skipped"})
+
 
 if __name__ == "__main__":
     try:
