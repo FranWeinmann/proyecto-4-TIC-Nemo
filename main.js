@@ -108,7 +108,7 @@ async function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
   await fetch(videoUrl, { 
-    method: "get", 
+    method: "GET", 
     headers: new Headers({ "ngrok-skip-browser-warning": "69420",}),
   }) .then(res => {
     if (res.ok){
@@ -184,12 +184,7 @@ leftOne.addEventListener('click', async ()=>{
   }).catch(err => { console.error("Error al enviar:", err) });
   checkOption();
 });
-document.addEventListener('DOMContentLoaded', async () => {
-  await fetch(`https://${raspbiID}/video`, {
-    method: "GET",
-    headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
-  }).catch(err => console.log("Error inicial skip-warning:", err));
-
+document.addEventListener('DOMContentLoaded', () => {
   adjustDimensions();
   checkOrientation();
   checkOption();
