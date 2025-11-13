@@ -109,7 +109,7 @@ async function showCamera() {
   const img = document.createElement("iframe");
   await fetch(videoUrl, { 
     method: "get", 
-    headers: new Headers({ "ngrok-skip-browser-warning": "69420"})
+    headers: new Headers({ "ngrok-skip-browser-warning": "69420",}),
   }) .then(res => {
     if (res.ok){
       img.src = videoUrl;
