@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "click-putting-investigation-shorter.trycloudflare.com";
+const raspbiID = "nemo.proyecto-nemo.vercel.app";
 let frenar = false;
 let lastSent = 0;
 
