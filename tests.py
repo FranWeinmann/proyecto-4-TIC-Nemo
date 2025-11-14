@@ -12,7 +12,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 GPIO.cleanup
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {
-    "origins": ["https://proyecto-nemo.vercel.app", "https://unprudential-unrefreshed-bennie.ngrok-free.dev"],
+    "origins": ["https://proyecto-nemo.vercel.app", "https://click-putting-investigation-shorter.trycloudflare.com"],
     "methods": ["GET", "POST", "OPTIONS"],
     "allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"]
 }})
@@ -33,7 +33,7 @@ def add_cors_headers(response):
 ENA = 12
 IN1motorA = 16
 IN2motorA = 18
-ENB = 34
+ENB = 11
 IN1motorB = 36
 IN2motorB = 38
 motorPins = [IN1motorA, IN2motorA, IN1motorB, IN2motorB]
@@ -201,71 +201,58 @@ def turnOff():
 		turnAllOff()
 	return jsonify({"status": "ok"})
 
+PWMa = None
+PWMb = None
+
 @app.route("/control", methods=["POST"])
 def control():
-    global frenar, Speed
-
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setwarnings(False)
-    GPIO.setup(ENA, GPIO.OUT)
-    GPIO.setup(ENB, GPIO.OUT)
-
-    for i in range(4):
-        GPIO.setup(pasoDerPins[i], GPIO.OUT)
-        GPIO.setup(pasoIzqPins[i], GPIO.OUT)
-        GPIO.setup(motorPins[i], GPIO.OUT)
-
-    PWMa = GPIO.PWM(ENA, 1000)
-    PWMb = GPIO.PWM(ENB, 1000)
-    PWMa.start(50)
-    PWMb.start(50)
+    global frenar, Speed, PWMa, PWMb
 
     data = request.get_json()
     print("Datos joystick:", data)
 
-    Frenar = data.get("frenar", True)
-    Direction = data.get("direction", 0)
-    Speed = data.get("speed", 0)
+    frenar = data.get("frenar", True)
+    direction = data.get("direction", 0)
+    speed = data.get("speed", 0)
 
-    if Frenar:
+    Speed = speed
+    cambiaVel()
+
+    if frenar:
         freno()
         cierroRed()
         return jsonify({"status": "detenido"})
-    else:
-        abroRed()
-        cambiaVel()
 
-        if 105 < Direction < 270:
-            if Direction <= 135:
-                giroIzq(1.75)
-            elif Direction <= 165:
-                giroIzq(2)
-            elif Direction <= 195:
-                giroIzq(2.5)
-            elif Direction <= 225:
-                giroIzq(3.25)
-            elif Direction <= 255:
-                giroIzq(4.25)
-            elif Direction < 270:
-                giroIzq(5.5)
+    abroRed()
+    if 105 < direction < 270:
+        if direction <= 135:
+            giroIzq(1.75)
+        elif direction <= 165:
+            giroIzq(2)
+        elif direction <= 195:
+            giroIzq(2.5)
+        elif direction <= 225:
+            giroIzq(3.25)
+        elif direction <= 255:
+            giroIzq(4.25)
+        elif direction < 270:
+            giroIzq(5.5)
 
-        elif 270 < Direction <= 360 or 0 <= Direction < 75:
-            if 45 <= Direction < 270:
-                giroDer(1.75)
-            elif 15 <= Direction < 270:
-                giroDer(2)
-            elif 0 <= Direction <= 345:
-                giroDer(2.5)
-            elif Direction >= 315:
-                giroDer(3.25)
-            elif Direction >= 285:
-                giroDer(4.25)
-            elif Direction > 270:
-                giroDer(5.5)
+    elif direction > 270 or direction < 75:
+        if direction >= 315:
+            giroDer(1.75)
+        elif direction >= 285:
+            giroDer(2)
+        elif direction >= 255:
+            giroDer(2.5)
+        elif direction >= 225:
+            giroDer(3.25)
+        elif direction >= 195:
+            giroDer(4.25)
+        else:
+            giroDer(5.5)
 
-        return jsonify({"status": "avanzando"})
-
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "avanzando"})
 
 @app.route("/video")
 def video_feed():
@@ -277,4 +264,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Cerrando servidor y cámara...")
         turnAllOff()
-
