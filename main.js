@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "10.8.5.160:5000";
+const raspbiID = "click-putting-investigation-shorter.trycloudflare.com";
 let frenar = false;
 let lastSent = 0;
 
@@ -81,7 +81,7 @@ function createJoystick (){
         const speed = Math.floor(mapRange(rawSpeed, 0, 150, 0, 100));
     
         frenar = false;
-        fetch(`http://${raspbiID}/control`, { 
+        fetch(`https://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction, speed, frenar })
@@ -90,7 +90,7 @@ function createJoystick (){
     });
 
     joystickInstance.on('end', function () {
-      fetch(`http://${raspbiID}/control`, { 
+      fetch(`https://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ frenar: true, speed: 0 })
@@ -117,7 +117,7 @@ function checkOption (){
 }
 
 async function showCamera() {
-  const videoUrl = `http://${raspbiID}/video`;
+  const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
   await fetch(videoUrl, { 
     method: "GET",
@@ -175,7 +175,7 @@ window.addEventListener('resize', checkOrientation);
 humanBtn.addEventListener('click', ()=>{
   isHuman = true;
   changeMode();
-  fetch(`http://${raspbiID}/mode`, {
+  fetch(`https://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "manual" })
@@ -185,7 +185,7 @@ humanBtn.addEventListener('click', ()=>{
 robotBtn.addEventListener('click', ()=>{
   isHuman = false;
   changeMode();
-  fetch(`http://${raspbiID}/mode`, {
+  fetch(`https://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" })
@@ -193,7 +193,7 @@ robotBtn.addEventListener('click', ()=>{
 });
 leftOne.addEventListener('click', async ()=>{
   isOn = false;
-  fetch(`http://${raspbiID}/isOn`, {
+  fetch(`https://${raspbiID}/isOn`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isOn: isOn })
@@ -201,7 +201,7 @@ leftOne.addEventListener('click', async ()=>{
   checkOption();
 });
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetch(`http://${raspbiID}/video`, {
+  await fetch(`https://${raspbiID}/video`, {
     method: "HEAD",
     headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
   })
