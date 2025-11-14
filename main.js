@@ -51,6 +51,12 @@ function changeMode (){
   }
 }
 
+function mapRange(value, inMin, inMax, outMin, outMax) {
+  return Math.min(outMax, Math.max(outMin,
+    (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
+  ));
+}
+
 function createJoystick (){
   if(!joystickCreated){
     const joystickSize = window.innerWidth < 750 ? 97 : 185;
@@ -66,7 +72,8 @@ function createJoystick (){
     joystickInstance.on('move', function (_, data) {
       if (data) {
         const direction = Math.floor(data.angle.degree);
-        const speed = Math.floor(data.distance);
+        const rawSpeed = data.distance;
+        const speed = Math.floor(mapRange(rawSpeed, 0, 150, 0, 100));
         frenar = false;
         fetch(`https://${raspbiID}/control`, { 
           method: "POST",
