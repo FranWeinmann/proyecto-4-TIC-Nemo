@@ -17,12 +17,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
-  );
+  const url = new URL(event.request.url);
+  if (url.hostname === "nemo.proyecto-nemo.vercel.app") {
+    return; 
+  }
 });
+
 
 self.addEventListener('activate', event => {
     event.waitUntil(clients.claim());
