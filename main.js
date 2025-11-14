@@ -13,6 +13,7 @@ let joystickInstance = null;
 let joystickCreated = false;
 const raspbiID = "unprudential-unrefreshed-bennie.ngrok-free.dev";
 let frenar = false;
+let lastSent = 0;
 
 function changeSelectOption (option, diselected){
   option.classList.remove('otherOption');
@@ -71,9 +72,14 @@ function createJoystick (){
 
     joystickInstance.on('move', function (_, data) {
       if (data) {
+        const now = Date.now();
+        if (now - lastSent < 100) return;
+        lastSent = now;
+    
         const direction = Math.floor(data.angle.degree);
         const rawSpeed = data.distance;
         const speed = Math.floor(mapRange(rawSpeed, 0, 150, 0, 100));
+    
         frenar = false;
         fetch(`https://${raspbiID}/control`, { 
           method: "POST",
@@ -84,11 +90,10 @@ function createJoystick (){
     });
 
     joystickInstance.on('end', function () {
-      frenar = true;
       fetch(`https://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ frenar })
+          body: JSON.stringify({ frenar: true, speed: 0 })
         }).catch(err => { console.error("Error al enviar:", err) });
     });
     joystickCreated = true;
