@@ -116,27 +116,16 @@ function checkOption (){
   }
 }
 
-async function showCamera() {
+function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
-  await fetch(videoUrl, { 
-    method: "GET"
-  }) .then(res => {
-    if (res.ok){
-      img.src = videoUrl;
-      console.log(res);
-    }
-    else console.log(res);
-  }) .catch((err) => {
-    rightSide.innerHTML = `<h1 style="font-size:4em; color:red;">⚠️ No se recibe el video</h1>`;
-    console.log(err);
-  });
   img.id = "video-stream";
   img.style = `
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;`;
+  img.src = videoUrl;
   rightSide.innerHTML = "";
   rightSide.appendChild(img);
 }
