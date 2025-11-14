@@ -81,7 +81,7 @@ function createJoystick (){
         const speed = Math.floor(mapRange(rawSpeed, 0, 150, 0, 100));
     
         frenar = false;
-        fetch(`https://${raspbiID}/control`, { 
+        fetch(`http://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction, speed, frenar })
@@ -90,7 +90,7 @@ function createJoystick (){
     });
 
     joystickInstance.on('end', function () {
-      fetch(`https://${raspbiID}/control`, { 
+      fetch(`http://${raspbiID}/control`, { 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ frenar: true, speed: 0 })
@@ -117,7 +117,7 @@ function checkOption (){
 }
 
 async function showCamera() {
-  const videoUrl = `https://${raspbiID}/video`;
+  const videoUrl = `http://${raspbiID}/video`;
   const img = document.createElement("iframe");
   await fetch(videoUrl, { 
     method: "GET",
@@ -175,7 +175,7 @@ window.addEventListener('resize', checkOrientation);
 humanBtn.addEventListener('click', ()=>{
   isHuman = true;
   changeMode();
-  fetch(`https://${raspbiID}/mode`, {
+  fetch(`http://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "manual" })
@@ -185,7 +185,7 @@ humanBtn.addEventListener('click', ()=>{
 robotBtn.addEventListener('click', ()=>{
   isHuman = false;
   changeMode();
-  fetch(`https://${raspbiID}/mode`, {
+  fetch(`http://${raspbiID}/mode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" })
@@ -193,7 +193,7 @@ robotBtn.addEventListener('click', ()=>{
 });
 leftOne.addEventListener('click', async ()=>{
   isOn = false;
-  fetch(`https://${raspbiID}/isOn`, {
+  fetch(`http://${raspbiID}/isOn`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isOn: isOn })
@@ -201,7 +201,7 @@ leftOne.addEventListener('click', async ()=>{
   checkOption();
 });
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetch(`https://${raspbiID}/video`, {
+  await fetch(`http://${raspbiID}/video`, {
     method: "HEAD",
     headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
   })
