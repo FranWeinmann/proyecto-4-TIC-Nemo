@@ -11,7 +11,7 @@ let isOn = true;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "unprudential-unrefreshed-bennie.ngrok-free.dev";
+const raspbiID = "10.8.5.160:5000";
 let frenar = false;
 let lastSent = 0;
 
