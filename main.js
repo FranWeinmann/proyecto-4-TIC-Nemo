@@ -190,7 +190,7 @@ leftOne.addEventListener('click', async ()=>{
 });
 document.addEventListener('DOMContentLoaded', async () => {
   await fetch(`https://${raspbiID}/video`, {
-    method: "GET",
+    method: "HEAD",
     headers: new Headers({ "ngrok-skip-browser-warning": "69420" })
   })
   adjustDimensions();
