@@ -7,9 +7,11 @@ import time
 from picamera2 import Picamera2, Preview
 import requests
 import urllib3
+import math
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 GPIO.cleanup
+
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {
     "origins": ["https://proyecto-nemo.vercel.app", "https://click-putting-investigation-shorter.trycloudflare.com"],
@@ -30,37 +32,72 @@ def add_cors_headers(response):
     response.headers.add("Access-Control-Allow-Credentials", "true")
     return response
 
+
+
 ENA = 12
 IN1motorA = 16
 IN2motorA = 18
 ENB = 11
-IN1motorB = 36
-IN2motorB = 38
+IN1motorB = 13
+IN2motorB = 15
 motorPins = [IN1motorA, IN2motorA, IN1motorB, IN2motorB]
-IN1pasoD = 7
-IN2pasoD = 11
-IN3pasoD = 13
-IN4pasoD = 15
+
+IN1pasoD = 32
+IN2pasoD = 36
+IN3pasoD = 38
+IN4pasoD = 40
 pasoDerPins = [IN1pasoD, IN2pasoD, IN3pasoD, IN4pasoD]
+
 IN1pasoI = 31
 IN2pasoI = 33
 IN3pasoI = 35
 IN4pasoI = 37
-High = GPIO.HIGH
-Low = GPIO.LOW
-motorLista = [
-	[High, Low, Low, High],
-	[Low, High, High, Low],
-	[Low, High, Low, High],
-	[High, Low, High, Low],
-	[Low, Low, Low, Low],
-	[High, High, High, High]
-]
 pasoIzqPins = [IN1pasoI, IN2pasoI, IN3pasoI, IN4pasoI]
 
+High = GPIO.HIGH
+Low = GPIO.LOW
+
+motorLista = [
+	[High,Low,Low,High],
+	[Low,High,High,Low],
+	[Low,High,Low,High],
+	[High,Low,High,Low],
+	[Low,Low,Low,Low],
+	[High,High,High,High]
+]
+
+pasosListaMAS = [
+	[High,Low,Low,Low],
+	[High,High,Low,Low],
+	[Low,High,Low,Low],
+	[Low,High,High,Low],
+	[Low,Low,High,Low],
+	[Low,Low,High,High],
+	[Low,Low,Low,High],
+	[High,Low,Low,High]
+]
+stepsCant = 750
+
+
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+for pin in range(4):
+    GPIO.setup(motorPins[pin], GPIO.OUT)
+	GPIO.setup(pasoDerPins[pin], GPIO.OUT)
+	GPIO.setup(pasoIzqPins[pin], GPIO.OUT)
+
+PWMA = GPIO.PWM(ENA, 1000)
+PWMB = GPIO.PWM(ENB, 1000)
+
+PWMA.start(50)
+PWMB.start(50)
+
+
+
 def cambiaVel():
-	PWMa.ChangeDutyCycle(Speed)
-	PWMb.ChangeDutyCycle(Speed)
+	PWMA.ChangeDutyCycle(Speed)
+	PWMB.ChangeDutyCycle(Speed)
 
 def derecho():
 	for entr in range (4):
@@ -73,32 +110,21 @@ def atras():
 def giroDer(x):
 	for entr in range (4):
 		GPIO.output(motorPins[entr], motorLista[0[entr]])
-		PWMa.ChangeDutyCycle(Speed)
-		PWMb.ChangeDutyCycle(math.floor(int(Speed)/x))
+		PWMA.ChangeDutyCycle(Speed)
+		PWMB.ChangeDutyCycle(math.floor(int(Speed)/x))
 
 def giroIzq(x):
 	for entr in range (4):
 		GPIO.output(motorPins[entr], motorLista[0[entr]])
-		PWMa.ChangeDutyCycle(math.floor(int(Speed)/x))
-		PWMb.ChangeDutyCycle(Speed)
+		PWMA.ChangeDutyCycle(math.floor(int(Speed)/x))
+		PWMB.ChangeDutyCycle(Speed)
 
 def freno():
 	for entr in range (4):
 		GPIO.output(motorPins[entr], motorLista[4[entr]])
 		cambiaVel(0)
 
-pasosListaMAS = [
-	[High,Low,Low,Low],
-	[High,High,Low,Low],
-	[Low,High,Low,Low],
-	[Low,High,High,Low],
-	[Low,Low,High,Low],
-	[Low,Low,High,High],
-	[Low,Low,Low,High],
-	[High,Low,Low,High]
-]
 
-stepsCant = 750
 
 def abroRed():
 	for i in range (stepsCant):
@@ -124,25 +150,23 @@ def cierroRed():
 				izq+= 1
 			time.sleep(0.001)
 
-def apago():
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setwarnings(False)
-    all_pins = pasoDerPins + pasoIzqPins + motorPins + [ENA, ENB]
-    for pin in all_pins:
-        GPIO.setup(pin, GPIO.OUT)
+
+
+def apago():2
     for i in range(4):
         GPIO.output(pasoDerPins[i], Low)
         GPIO.output(pasoIzqPins[i], Low)
         GPIO.output(motorPins[i], Low)
     GPIO.output(ENA, Low)
     GPIO.output(ENB, Low)
-
+	GPIO.cleanup()
 
 def turnAllOff():
 	picam.stop()
 	picam.stop_preview()
 	apago()
-	GPIO.cleanup()
+
+
 
 def generate():
 	while True:
@@ -201,8 +225,6 @@ def turnOff():
 		turnAllOff()
 	return jsonify({"status": "ok"})
 
-PWMa = None
-PWMb = None
 
 @app.route("/control", methods=["POST"])
 def control():
@@ -222,8 +244,9 @@ def control():
         freno()
         cierroRed()
         return jsonify({"status": "detenido"})
+	else:
+		abroRed()
 
-    abroRed()
     if 105 < direction < 270:
         if direction <= 135:
             giroIzq(1.75)
@@ -239,17 +262,17 @@ def control():
             giroIzq(5.5)
 
     elif direction > 270 or direction < 75:
-        if direction >= 315:
+        if 270 > direction >= 45:
             giroDer(1.75)
-        elif direction >= 285:
+        elif 270 > direction >= 15:
             giroDer(2)
-        elif direction >= 255:
+        elif direction <= 345 or direction < 15:
             giroDer(2.5)
-        elif direction >= 225:
+        elif direction >= 315:
             giroDer(3.25)
-        elif direction >= 195:
+        elif direction >= 285:
             giroDer(4.25)
-        else:
+		elif direction > 270:
             giroDer(5.5)
 
     return jsonify({"status": "avanzando"})
