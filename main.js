@@ -7,7 +7,7 @@ const robotBtn = document.querySelector('.robotBtn');
 const joystick  = document.getElementById('joystick-container');
 const btnBox = document.querySelector('.btnBox');
 const box = document.querySelector('.box');
-let isOn = true;
+let isOn = false;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
@@ -116,6 +116,23 @@ function checkOption (){
   }
 }
 
+async function checkRaspberry() {
+  try {
+    const response = await fetch(`https://${raspbiID}/verify`, {
+      method: "GET",
+      headers: { "ngrok-skip-browser-warning": "true" }
+    });
+
+    if (!response.ok) throw new Error("No responde");
+    isOn = true;
+    checkOption();
+    showCamera();
+  } catch (err) {
+    isOn = false;
+    checkOption();
+  }
+}
+
 function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
@@ -185,6 +202,7 @@ leftOne.addEventListener('click', async ()=>{
   checkOption();
 });
 document.addEventListener('DOMContentLoaded', () => {
+  await checkRaspberry();
   adjustDimensions();
   checkOrientation();
   checkOption();

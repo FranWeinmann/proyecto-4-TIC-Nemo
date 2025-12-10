@@ -281,6 +281,10 @@ def control():
 def video_feed():
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route("/verify", methods=["GET"])
+def verify():
+    return jsonify({"status": "alive"})
+
 if __name__ == "__main__":
     try:
         app.run(host="0.0.0.0", port=5000, debug=False, ssl_context='adhoc')
