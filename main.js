@@ -116,7 +116,7 @@ function checkOption (){
   }
 }
 
-/*async function checkRaspberry() {
+async function checkRaspberry() {
   try {
     const response = await fetch(`https://${raspbiID}/verify`, {
       method: "GET",
@@ -135,7 +135,7 @@ function checkOption (){
     console.log(err);
   }
 }
-*/
+
 function showCamera() {
   const videoUrl = `https://${raspbiID}/video`;
   const img = document.createElement("iframe");
@@ -205,7 +205,7 @@ leftOne.addEventListener('click', async ()=>{
   checkOption();
 });
 document.addEventListener('DOMContentLoaded', async () => {
-  //await checkRaspberry();
+  await checkRaspberry();
   adjustDimensions();
   checkOrientation();
   checkOption();
