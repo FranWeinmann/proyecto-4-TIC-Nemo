@@ -201,7 +201,7 @@ leftOne.addEventListener('click', async ()=>{
   }).catch(err => { console.error("Error al enviar:", err) });
   checkOption();
 });
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   await checkRaspberry();
   adjustDimensions();
   checkOrientation();
