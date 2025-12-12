@@ -127,9 +127,12 @@ async function checkRaspberry() {
     isOn = true;
     checkOption();
     showCamera();
+    console.log(response);
   } catch (err) {
     isOn = false;
     checkOption();
+    console.log(response);
+    console.log(err);
   }
 }
 
