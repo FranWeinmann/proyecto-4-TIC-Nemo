@@ -9,14 +9,13 @@ import requests
 import urllib3
 import math
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 GPIO.cleanup
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {
-    "origins": ["https://proyecto-nemo.vercel.app", "https://click-putting-investigation-shorter.trycloudflare.com"],
-    "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"]
+	"origins": ["https://proyecto-nemo.vercel.app", "https://click-putting-investigation-shorter.trycloudflare.com"],
+	"methods": ["GET", "POST", "OPTIONS"],
+	"allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"]
 }})
 model = YOLO("best.pt")
 picam = Picamera2()
@@ -26,11 +25,11 @@ frenar = True
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers.add("Access-Control-Allow-Origin", "https://proyecto-nemo.vercel.app")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,ngrok-skip-browser-warning")
-    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-    response.headers.add("Access-Control-Allow-Credentials", "true")
-    return response
+	response.headers.add("Access-Control-Allow-Origin", "https://proyecto-nemo.vercel.app")
+	response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,ngrok-skip-browser-warning")
+	response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+	response.headers.add("Access-Control-Allow-Credentials", "true")
+	return response
 
 
 
@@ -83,9 +82,11 @@ stepsCant = 750
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 for pin in range(4):
-    GPIO.setup(motorPins[pin], GPIO.OUT)
+	GPIO.setup(motorPins[pin], GPIO.OUT)
 	GPIO.setup(pasoDerPins[pin], GPIO.OUT)
 	GPIO.setup(pasoIzqPins[pin], GPIO.OUT)
+	GPIO.setup(ENA, GPIO.OUT)
+	GPIO.setup(ENB, GPIO.OUT)
 
 PWMA = GPIO.PWM(ENA, 1000)
 PWMB = GPIO.PWM(ENB, 1000)
@@ -101,27 +102,27 @@ def cambiaVel():
 
 def derecho():
 	for entr in range (4):
-		GPIO.output(motorPins[entr], motorLista[0[entr]])
+		GPIO.output(motorPins[entr], motorLista[0][entr])
 
 def atras():
 	for entr in range (4):
-		GPIO.output(motorPins[entr], motorLista[1[entr]])
+		GPIO.output(motorPins[entr], motorLista[1][entr])
 
 def giroDer(x):
 	for entr in range (4):
-		GPIO.output(motorPins[entr], motorLista[0[entr]])
+		GPIO.output(motorPins[entr], motorLista[0][entr])
 		PWMA.ChangeDutyCycle(Speed)
 		PWMB.ChangeDutyCycle(math.floor(int(Speed)/x))
 
 def giroIzq(x):
 	for entr in range (4):
-		GPIO.output(motorPins[entr], motorLista[0[entr]])
+		GPIO.output(motorPins[entr], motorLista[0][entr])
 		PWMA.ChangeDutyCycle(math.floor(int(Speed)/x))
 		PWMB.ChangeDutyCycle(Speed)
 
 def freno():
 	for entr in range (4):
-		GPIO.output(motorPins[entr], motorLista[4[entr]])
+		GPIO.output(motorPins[entr], motorLista[4][entr])
 		cambiaVel(0)
 
 
@@ -152,19 +153,22 @@ def cierroRed():
 
 
 
-def apago():2
-    for i in range(4):
-        GPIO.output(pasoDerPins[i], Low)
-        GPIO.output(pasoIzqPins[i], Low)
-        GPIO.output(motorPins[i], Low)
-    GPIO.output(ENA, Low)
-    GPIO.output(ENB, Low)
+def apago():
+	for i in range(4):
+		GPIO.output(pasoDerPins[i], Low)
+		GPIO.output(pasoIzqPins[i], Low)
+		GPIO.output(motorPins[i], Low)
+	GPIO.output(ENA, Low)
+	GPIO.output(ENB, Low)
 	GPIO.cleanup()
 
 def turnAllOff():
 	picam.stop()
 	picam.stop_preview()
 	apago()
+	func = request.environ.get('werkzeug.server.shutdown')
+	if func:
+		func()
 
 
 
@@ -211,11 +215,11 @@ def generate():
 
 @app.route("/mode", methods=["POST"])
 def change_mode():
-    global current_mode	
-    data = request.get_json()
-    current_mode = data.get("mode", "manual")
-    print(f"Modo cambiado a: {current_mode}")
-    return jsonify({"status": "ok", "mode": current_mode})
+	global current_mode	
+	data = request.get_json()
+	current_mode = data.get("mode", "manual")
+	print(f"Modo cambiado a: {current_mode}")
+	return jsonify({"status": "ok", "mode": current_mode})
 
 
 @app.route("/isOn", methods=["POST"])
@@ -228,66 +232,66 @@ def turnOff():
 
 @app.route("/control", methods=["POST"])
 def control():
-    global frenar, Speed, PWMa, PWMb
+	global frenar, Speed, PWMa, PWMb
 
-    data = request.get_json()
-    print("Datos joystick:", data)
+	data = request.get_json()
+	print("Datos joystick:", data)
 
-    frenar = data.get("frenar", True)
-    direction = data.get("direction", 0)
-    speed = data.get("speed", 0)
+	frenar = data.get("frenar", True)
+	direction = data.get("direction", 0)
+	speed = data.get("speed", 0)
 
-    Speed = speed
-    cambiaVel()
+	Speed = speed
+	cambiaVel()
 
-    if frenar:
-        freno()
-        cierroRed()
-        return jsonify({"status": "detenido"})
+	if frenar:
+		freno()
+		cierroRed()
+		return jsonify({"status": "detenido"})
 	else:
 		abroRed()
 
-    if 105 < direction < 270:
-        if direction <= 135:
-            giroIzq(1.75)
-        elif direction <= 165:
-            giroIzq(2)
-        elif direction <= 195:
-            giroIzq(2.5)
-        elif direction <= 225:
-            giroIzq(3.25)
-        elif direction <= 255:
-            giroIzq(4.25)
-        elif direction < 270:
-            giroIzq(5.5)
+	if 105 < direction < 270:
+		if direction <= 135:
+			giroIzq(1.75)
+		elif direction <= 165:
+			giroIzq(2)
+		elif direction <= 195:
+			giroIzq(2.5)
+		elif direction <= 225:
+			giroIzq(3.25)
+		elif direction <= 255:
+			giroIzq(4.25)
+		elif direction < 270:
+			giroIzq(5.5)
 
-    elif direction > 270 or direction < 75:
-        if 270 > direction >= 45:
-            giroDer(1.75)
-        elif 270 > direction >= 15:
-            giroDer(2)
-        elif direction <= 345 or direction < 15:
-            giroDer(2.5)
-        elif direction >= 315:
-            giroDer(3.25)
-        elif direction >= 285:
-            giroDer(4.25)
+	elif direction > 270 or direction < 75:
+		if 270 > direction >= 45:
+			giroDer(1.75)
+		elif 270 > direction >= 15:
+			giroDer(2)
+		elif direction <= 345 or direction < 15:
+			giroDer(2.5)
+		elif direction >= 315:
+			giroDer(3.25)
+		elif direction >= 285:
+			giroDer(4.25)
 		elif direction > 270:
-            giroDer(5.5)
+			giroDer(5.5)
 
-    return jsonify({"status": "avanzando"})
+	return jsonify({"status": "avanzando"})
 
 @app.route("/video")
 def video_feed():
-    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+	return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/verify", methods=["GET"])
 def verify():
-    return jsonify({"status": "alive"})
+	return jsonify({"status": "alive"})
 
 if __name__ == "__main__":
-    try:
-        app.run(host="0.0.0.0", port=5000, debug=False, ssl_context='adhoc')
-    except KeyboardInterrupt:
-        print("Cerrando servidor y cámara...")
-        turnAllOff()
+	try:
+		app.run(host="0.0.0.0", port=5000, debug=False, ssl_context='adhoc')
+	except KeyboardInterrupt:
+		print("Cerrando servidor y cámara...")
+		turnAllOff()
