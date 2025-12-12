@@ -11,7 +11,7 @@ let isOn = false;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "nemo.proyecto-nemo.vercel.app";
+const raspbiID = "https://lucy-postventral-captiously.ngrok-free.dev";
 let frenar = false;
 let lastSent = 0;
 
