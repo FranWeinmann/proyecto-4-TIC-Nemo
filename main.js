@@ -11,7 +11,7 @@ let isOn = false;
 let isHuman = true;
 let joystickInstance = null;
 let joystickCreated = false;
-const raspbiID = "https://lucy-postventral-captiously.ngrok-free.dev";
+const raspbiID = "lucy-postventral-captiously.ngrok-free.dev";
 let frenar = false;
 let lastSent = 0;
 
