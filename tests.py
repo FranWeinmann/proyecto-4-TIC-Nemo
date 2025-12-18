@@ -9,11 +9,11 @@ import requests
 import urllib3
 import math
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-GPIO.cleanup
+GPIO.cleanup()
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {
-	"origins": ["https://proyecto-nemo.vercel.app", "https://click-putting-investigation-shorter.trycloudflare.com"],
+	"origins": ["https://proyecto-nemo.vercel.app", "https://lucy-postventral-captiously.ngrok-free.dev"],
 	"methods": ["GET", "POST", "OPTIONS"],
 	"allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"]
 }})
@@ -22,6 +22,7 @@ picam = Picamera2()
 picam.start()
 current_mode = "manual"
 frenar = True
+raspbysStatus = True
 
 @app.after_request
 def add_cors_headers(response):
@@ -32,6 +33,8 @@ def add_cors_headers(response):
 	return response
 
 
+
+LED = 7
 
 ENA = 12
 IN1motorA = 16
@@ -55,6 +58,7 @@ pasoIzqPins = [IN1pasoI, IN2pasoI, IN3pasoI, IN4pasoI]
 
 High = GPIO.HIGH
 Low = GPIO.LOW
+ABIERTO = False
 
 motorLista = [
 	[High,Low,Low,High],
@@ -87,12 +91,27 @@ for pin in range(4):
 	GPIO.setup(pasoIzqPins[pin], GPIO.OUT)
 	GPIO.setup(ENA, GPIO.OUT)
 	GPIO.setup(ENB, GPIO.OUT)
+	GPIO.setup(LED, GPIO.OUT)
 
 PWMA = GPIO.PWM(ENA, 1000)
 PWMB = GPIO.PWM(ENB, 1000)
 
 PWMA.start(50)
 PWMB.start(50)
+
+GPIO.output(LED, High)
+time.sleep(0.5)
+GPIO.output(LED, Low)
+time.sleep(0.5)
+GPIO.output(LED, High)
+time.sleep(0.5)
+GPIO.output(LED, Low)
+time.sleep(0.5)
+GPIO.output(LED, High)
+time.sleep(0.5)
+GPIO.output(LED, Low)
+time.sleep(0.5)
+
 
 
 
@@ -128,49 +147,51 @@ def freno():
 
 
 def abroRed():
-	for i in range (stepsCant):
-		izq = 7
-		der = 0
-		while izq > -1 and der < 8:
-			for pin in range (4):
-				GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
-				GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
-				der+= 1
-				izq-= 1
-			time.sleep(0.001)
+	if ABIERTO == False:
+		for i in range (stepsCant):
+			izq = 7
+			der = 0
+			while izq > -1 and der < 8:
+				for pin in range (4):
+					GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
+					GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
+					der+= 1
+					izq-= 1
+				time.sleep(0.001)
+		ABIERTO = True
 
 def cierroRed():
-	for i in range (stepsCant):
-		izq = 0
-		der = 7
-		while izq < 8 and der > -1:
-			for pin in range (4):
-				GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
-				GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
-				der-= 1
-				izq+= 1
-			time.sleep(0.001)
+	if ABIERTO == True:
+		for i in range (stepsCant):
+			izq = 0
+			der = 7
+			while izq < 8 and der > -1:
+				for pin in range (4):
+					GPIO.output(pasoDerPins[pin], pasosListaMAS[der][pin])
+					GPIO.output(pasoIzqPins[pin], pasosListaMAS[izq][pin])
+					der-= 1
+					izq+= 1
+				time.sleep(0.01)
+		ABIERTO = False
 
 
 
 def apago():
+	PWMA.stop()
+	PWMB.stop()
 	for i in range(4):
 		GPIO.output(pasoDerPins[i], Low)
 		GPIO.output(pasoIzqPins[i], Low)
 		GPIO.output(motorPins[i], Low)
 	GPIO.output(ENA, Low)
 	GPIO.output(ENB, Low)
+	GPIO.output(LED, Low)
 	GPIO.cleanup()
 
 def turnAllOff():
 	picam.stop()
 	picam.stop_preview()
 	apago()
-	func = request.environ.get('werkzeug.server.shutdown')
-	if func:
-		func()
-
-
 
 def generate():
 	while True:
@@ -218,24 +239,27 @@ def change_mode():
 	global current_mode	
 	data = request.get_json()
 	current_mode = data.get("mode", "manual")
-	print(f"Modo cambiado a: {current_mode}")
 	return jsonify({"status": "ok", "mode": current_mode})
 
 
-@app.route("/isOn", methods=["POST"])
+@app.route("/isOn", methods=["POST", "GET"])
 def turnOff():
-	data = request.get_json()
-	if not data["isOn"]:
-		turnAllOff()
-	return jsonify({"status": "ok"})
-
+	global raspbysStatus
+	if request.method == "POST":
+		raspbysStatus = request.get_json()["isOn"]
+		if raspbysStatus["isOn"]:
+			pass
+		else:
+			turnAllOff()
+		return jsonify({"status": "ok"})
+	elif request.method == "GET":
+		return jsonify({"isOn": raspbysStatus})
 
 @app.route("/control", methods=["POST"])
 def control():
 	global frenar, Speed, PWMa, PWMb
 
 	data = request.get_json()
-	print("Datos joystick:", data)
 
 	frenar = data.get("frenar", True)
 	direction = data.get("direction", 0)
